@@ -1,15 +1,24 @@
+import os
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+import subprocess
 from time import sleep
-import keyboard
 import unittest
 
+TEST_URL = os.environ.get('GEO_2050_TEST_URL', 'https://2018.geo2050.org')
+print("TEST_URL:", TEST_URL)
+
+def startDisplayServer():
+    subprocess.call("pkill -9 Xvfb", shell=True)
+    subprocess.call("Xvfb :10 -ac &", shell=True)
+    subprocess.call("export DISPLAY=:10", shell=True)
 
 class testSpeaker(unittest.TestCase):
     def setUp(self):
+        startDisplayServer()
         self.browser = webdriver.Firefox()
         self.addCleanup(self.browser.quit)
-        self.browser.get('https://2018.geo2050.org')
+        self.browser.get(TEST_URL)
 
     def testSpeakerSection(self):
         speakerSection = self.browser.find_element_by_id('speakers')
@@ -47,9 +56,10 @@ class testSpeaker(unittest.TestCase):
 
 class testProgram(unittest.TestCase):
     def setUp(self):
+        startDisplayServer()
         self.browser = webdriver.Firefox()
         self.addCleanup(self.browser.quit)
-        self.browser.get('https://2018.geo2050.org')
+        self.browser.get(TEST_URL)
 
     def testTwoDaysAppear(self):
         programDays = self.browser.find_elements_by_class_name('program-day-title')
@@ -71,9 +81,10 @@ class testProgram(unittest.TestCase):
 
 class testSponsors(unittest.TestCase):
     def setUp(self):
+        startDisplayServer()
         self.browser = webdriver.Firefox()
         self.addCleanup(self.browser.quit)
-        self.browser.get('https://2018.geo2050.org')
+        self.browser.get(TEST_URL)
 
     def testNumberSponsors(self):
         sponsors = self.browser.find_elements_by_css_selector('#partners-and-sponsors a')
@@ -105,9 +116,10 @@ class testSponsors(unittest.TestCase):
 
 class testSponsorshipOpportunities(unittest.TestCase):
     def setUp(self):
+        startDisplayServer()
         self.browser = webdriver.Firefox()
         self.addCleanup(self.browser.quit)
-        self.browser.get('https://2018.geo2050.org')
+        self.browser.get(TEST_URL)
 
     def testSponsorshipPDF(self):
         opportunity = self.browser.find_element_by_class_name("opportunity")
